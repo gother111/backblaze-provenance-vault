@@ -15,8 +15,8 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 - [x] Entrant-owned GitHub repository exists: <https://github.com/gother111/backblaze-provenance-vault>.
 - [x] Repository is public.
 - [x] `.env`, credentials, local data, QA scratch files, and research clones are absent from the published commit.
-- [ ] `README.md` installs and runs successfully from a clean clone.
-- [ ] License and third-party attributions are accurate.
+- [x] `README.md` installs and verifies successfully from a clean clone at `f6d1d235f509ffd92e5c502724b1b45878339949`.
+- [x] GitHub detects the repository's MIT license; listed third-party packages and integrations match the source.
 - [ ] `make verify` passes on the exact final commit.
 - [ ] Final commit hash is recorded: `________________`.
 
