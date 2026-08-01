@@ -164,7 +164,7 @@ Do not bake `.env` into the image or expose provider/B2 credentials to the brows
 - `frontend/src/`: React interface and provenance inspector
 - `tests/`: backend integration and API tests
 - `docs/`: architecture, rules research, design system, deployment, and QA evidence
-- `submission/`: Devpost copy, demo script, readiness checklist, blockers, and Genblaze feedback draft
+- `submission/`: concise and extended Devpost copy, live-evidence packet, demo script, readiness checklist, blockers, and Genblaze feedback draft
 
 ## Current evidence status
 

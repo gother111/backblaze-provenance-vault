@@ -22,6 +22,7 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 
 ## C. Real B2 + Genblaze evidence
 
+- [ ] One same-run packet is completed from `LIVE_EVIDENCE_PACKET.md` without credentials.
 - [ ] `PROVENANCE_STORAGE_MODE=b2` on the public deployment.
 - [ ] Header says `B2 CONNECTED`.
 - [ ] Selected provider is a real Genblaze generative-media connector.
@@ -46,6 +47,7 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 - [ ] Desktop 1440 × 1000 and mobile 390 × 844 pass without horizontal overflow.
 - [ ] Generate, manifest, verify, asset, and library flows work.
 - [ ] No uncaught browser errors.
+- [ ] App remains free and unrestricted through the judging period ending August 11, 2026 at 5:00 PM EDT.
 
 ## E. Demo video
 
@@ -66,6 +68,7 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 - [ ] Screenshots show the final live deployment.
 - [ ] Claims distinguish confirmed facts from future work.
 - [ ] No local rehearsal is presented as cloud/AI evidence.
+- [ ] All submission materials and testing instructions are in English.
 
 ## G. Final submit proof
 
