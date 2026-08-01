@@ -1,0 +1,37 @@
+[project]
+name = "provenance-vault"
+version = "0.1.0"
+description = "Generate campaign media and preserve verifiable Genblaze provenance in Backblaze B2."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { text = "MIT" }
+dependencies = [
+  "fastapi>=0.116,<1",
+  "genblaze==0.4.5",
+  "genblaze-gmicloud==0.3.5",
+  "genblaze-openai==0.3.4",
+  "httpx>=0.28,<1",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4,<9",
+  "pytest-cov>=6.2,<7",
+  "ruff>=0.12,<1",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
