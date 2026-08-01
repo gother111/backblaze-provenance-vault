@@ -1,6 +1,6 @@
 # Exact blockers to a compliant submission
 
-The code and local rehearsal are ready. These remaining steps require the entrant's external accounts, identity, money/credits, or public authorization and were intentionally not performed.
+The code, local rehearsal, public source repository, and Genblaze repository star are ready. These remaining steps require the entrant's external accounts, identity, money/credits, or public authorization and were intentionally not performed.
 
 ## Hard blockers
 
@@ -21,18 +21,12 @@ The code and local rehearsal are ready. These remaining steps require the entran
    - add server-side secrets;
    - pass every check in `docs/DEPLOYMENT.md` from a private browser window.
 
-4. **GitHub repository**
-   - create the entrant-owned repository and push this project;
-   - decide public vs private;
-   - if private, grant the organizer account specified on Devpost access;
-   - confirm README setup works from a clean clone.
-
-5. **Public demo video**
+4. **Public demo video**
    - record a real B2/live-provider run using `submission/DEMO_SCRIPT.md`;
    - export under three minutes;
    - upload publicly to a supported host and verify anonymous playback.
 
-6. **Devpost identity and submission**
+5. **Devpost identity and submission**
    - sign in/join the hackathon;
    - personally verify age, residency, sanctions/location, organizer/employment, tax, and prize eligibility;
    - accept official rules and required platform terms;
@@ -47,12 +41,12 @@ The code and local rehearsal are ready. These remaining steps require the entran
 - Run `make verify` on the final commit and the live acceptance test after deployment.
 - Ensure the final source was created during the eligible submission window or otherwise meets the rules' substantial-new-work condition.
 
-## Optional organizer request
+## Completed organizer request
 
-The hackathon materials encourage engagement with the Genblaze repository. Starring a repository is an external account action and was not performed. It is not treated here as a substitute for any formal rule requirement.
+The entrant account starred the Genblaze repository on 2026-08-01. This is recorded as an optional organizer request, not as a substitute for any formal rule requirement.
 
 ## Development-only limitation
 
 The image-generation tool used for a UI concept pass failed twice because its upstream service was unreachable. The interface was implemented and browser-verified manually. This is not a runtime or submission blocker.
 
-The Docker 28.3.2 client is installed locally, but its daemon was not running, so the Dockerfile could not be image-built in this environment. The native production frontend/API path was built and served successfully; the final operator should run `docker build -t provenance-vault .` as part of the deployment gate.
+The Docker 28.3.2 client is installed locally. Docker Desktop was started, but its daemon did not answer a bounded CLI check, so the Dockerfile has not yet been image-built in this environment. The native production frontend/API path was built and served successfully; `docker build -t provenance-vault .` remains part of the deployment gate.

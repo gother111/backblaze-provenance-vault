@@ -6,6 +6,8 @@
 
 This repository is an entry candidate for the [Backblaze Generative Media Hackathon](https://backblaze-generative-media.devpost.com/). It is deliberately honest about readiness: the local mode is fully exercised, while live B2 and paid AI-provider calls require the account credentials listed in [submission/BLOCKERS.md](submission/BLOCKERS.md).
 
+Public source: <https://github.com/gother111/backblaze-provenance-vault>
+
 ## Why it is useful
 
 Creative teams routinely move generated media from a model into chat, downloads, shared drives, and publishing tools. That breaks the connection between the final file and the prompt, model, parameters, and generation time. Provenance Vault keeps that chain inspectable:
@@ -175,7 +177,8 @@ Do not bake `.env` into the image or expose provider/B2 credentials to the brows
 | B2 integration code exists | Confirmed by inspection/tests that do not call B2 |
 | Successful real B2 upload/read-back | **Not yet confirmed: credentials required** |
 | Successful paid AI-provider generation | **Not yet confirmed: provider credential/credit required** |
-| Public app, GitHub repository, public demo video, Devpost submission | **Not created: external account actions required** |
+| Public GitHub repository | Confirmed: <https://github.com/gother111/backblaze-provenance-vault> |
+| Public app, public demo video, Devpost submission | **Not yet created** |
 
 Do not collapse these states. A compliant final entry needs the last three rows completed before the deadline.
 

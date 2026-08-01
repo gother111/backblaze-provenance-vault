@@ -12,9 +12,9 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 
 ## B. Reproducible source
 
-- [ ] Entrant-owned GitHub repository exists.
-- [ ] Repository visibility meets the rules; organizer access is granted if private.
-- [ ] `.env`, credentials, local data, QA scratch files, and research clones are absent.
+- [x] Entrant-owned GitHub repository exists: <https://github.com/gother111/backblaze-provenance-vault>.
+- [x] Repository is public.
+- [x] `.env`, credentials, local data, QA scratch files, and research clones are absent from the published commit.
 - [ ] `README.md` installs and runs successfully from a clean clone.
 - [ ] License and third-party attributions are accurate.
 - [ ] `make verify` passes on the exact final commit.

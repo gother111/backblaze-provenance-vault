@@ -102,5 +102,5 @@ Backblaze B2, Genblaze, GMI Cloud [VERIFY], OpenAI [REMOVE IF UNUSED], Python, F
 ## Links
 
 - Live app: `[REQUIRED: public HTTPS URL]`
-- Source: `[REQUIRED: GitHub URL]`
+- Source: <https://github.com/gother111/backblaze-provenance-vault>
 - Demo video: `[REQUIRED: public video URL, under 3 minutes]`
