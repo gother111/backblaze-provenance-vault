@@ -40,10 +40,10 @@ If the stored object changes, byte verification fails even when the original man
 
 - **Genblaze** orchestrates the image provider, run/step metadata, canonical provenance manifest, and object-storage sink.
 - **Backblaze B2** is the durable integrity boundary. `S3StorageBackend.for_backblaze` and `ObjectStorageSink` persist assets/manifests with `KeyStrategy.CONTENT_ADDRESSABLE`.
-- **FastAPI** validates requests, enforces the “no live generation without B2” gate, maintains the run index, proxies private assets, and independently re-hashes B2 bytes.
+- **FastAPI** validates requests, enforces the “no live generation without B2” gate, maintains a B2-backed live run index, proxies private assets, and independently re-hashes B2 bytes.
 - **React + TypeScript** provide the creator workspace, proof ledger, manifest viewer, verifier, and run library.
 - **pytest + Vitest + Ruff + TypeScript** cover orchestration, manifests, content addressing, tamper detection, API behavior, secret redaction, formatting, and build correctness.
-- A multi-stage **Docker** build packages the frontend and API as one deployable service.
+- A multi-stage **Docker** build packages the frontend and API as one deployable service; a separate **Vercel Services** configuration keeps the same public API on a stateless runtime. Neither deployment path is live evidence until its acceptance gate passes.
 
 ## How we use Backblaze B2
 
@@ -55,6 +55,8 @@ B2 is not a final screenshot dump. It is in the critical path for every live run
 4. Provenance Vault derives the B2 object key from the returned asset URL.
 5. It downloads the object from B2 and hashes the actual bytes again during creation.
 6. A user can trigger the same B2 read-back at any time with **Verify bytes**.
+7. Provenance Vault writes its canonical manifest copy first and full run record last, then lists
+   record objects as commit markers so serverless instances share one durable library.
 
 [VERIFY: insert final B2 bucket region, live run ID, object key, asset SHA-256, manifest hash, and verification timestamp. Never insert credentials.]
 
@@ -89,7 +91,7 @@ Provenance has at least two layers: the integrity of the generation record and t
 
 ## What's next
 
-- store the searchable run index itself in B2 or a transactional database;
+- add a transactional metadata layer when multi-user edits or richer queries outgrow the immutable B2 run index;
 - add authenticated team workspaces and scoped sharing links;
 - extend from still images to video and audio while keeping the same manifest/byte checks;
 - support signed export bundles for agencies handing work to clients;

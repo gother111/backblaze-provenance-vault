@@ -93,7 +93,6 @@ Create a private B2 bucket and a bucket-scoped application key that can read and
 ```dotenv
 PROVENANCE_STORAGE_MODE=b2
 PROVENANCE_DEFAULT_PROVIDER=gmicloud
-PROVENANCE_DATA_DIR=data
 
 B2_KEY_ID=...
 B2_APP_KEY=...
@@ -103,6 +102,11 @@ B2_REGION=us-west-004
 GMI_API_KEY=...
 GMI_IMAGE_MODEL=seedream-5.0-lite
 ```
+
+For Docker, the image already sets `PROVENANCE_DATA_DIR=/app/data` and the example volume keeps
+that staging/local path persistent. For Vercel Services, leave `PROVENANCE_DATA_DIR` unset: B2 is
+the durable run-index and manifest store, while any provider staging uses the runtime's temporary
+directory and is not treated as durable state.
 
 OpenAI is also supported through the official Genblaze connector:
 
@@ -129,7 +133,7 @@ Run one new asset, press **Verify bytes**, then confirm all of the following bef
 | --- | --- | --- |
 | `GET` | `/api/health` | Service, Genblaze version, capability booleans, run count |
 | `GET` | `/api/config` | Non-secret readiness state for the UI |
-| `GET` | `/api/runs` | Immutable local run index |
+| `GET` | `/api/runs` | Immutable local or B2-backed run index |
 | `POST` | `/api/runs` | Generate, seal, persist, and verify one asset |
 | `GET` | `/api/runs/{id}/asset` | Stream the local or B2 object through the API |
 | `GET` | `/api/runs/{id}/manifest` | Return the canonical Genblaze manifest |
@@ -143,11 +147,21 @@ Interactive API documentation is available at `/docs` while the service is runni
 make verify
 ```
 
-This runs Python linting, backend tests, TypeScript checking, frontend tests, and the production frontend build. The backend suite covers actual local Genblaze orchestration, canonical manifests, content-addressed keys, a directory containing spaces, API behavior, secret redaction, provider-size contracts, and byte-tampering detection.
+This runs Python linting, backend tests, TypeScript checking, frontend tests, and the production frontend build. The backend suite covers actual local Genblaze orchestration, canonical manifests, content-addressed keys, a directory containing spaces, API behavior, secret redaction, provider-size contracts, byte-tampering detection, B2 repository behavior through network-free fakes, and the Vercel route-prefix boundary.
 
 ## Deployment
 
-The included [Dockerfile](Dockerfile) builds the React client and serves it from the FastAPI process. A deployment must provide a persistent volume for `PROVENANCE_DATA_DIR`; B2 contains the durable media and manifests, while this prototype's searchable run index is a small local JSON store.
+The repository supports two deployment shapes without changing the public `/api/*` contract:
+
+- [Dockerfile](Dockerfile) builds the React client and FastAPI API as one service. Its explicit
+  `/app/data` path remains compatible with a persistent volume.
+- [vercel.json](vercel.json) defines separate Vite and FastAPI Vercel Services. When B2 mode and
+  credentials are configured, the full run record and canonical manifest copy are persisted in
+  B2, so the searchable library does not depend on a serverless filesystem.
+
+The Vercel project must use the **Services** Framework Preset. The configuration and network-free
+tests are present, but no Vercel project, deployment, environment values, or live B2/provider run
+has been created from this repository.
 
 Example:
 
@@ -161,7 +175,9 @@ Do not bake `.env` into the image or expose provider/B2 credentials to the brows
 ## Repository map
 
 - `backend/app/`: FastAPI API, Genblaze pipeline, B2 sink, repository, and verifier
+- `backend/vercel_app.py`: prefix-free internal FastAPI entrypoint for the `/api` Vercel Service
 - `frontend/src/`: React interface and provenance inspector
+- `vercel.json`: Vite `/` plus FastAPI `/api` Services routing
 - `tests/`: backend integration and API tests
 - `docs/`: architecture, rules research, design system, deployment, and QA evidence
 - `submission/`: concise and extended Devpost copy, live-evidence packet, demo script, readiness checklist, blockers, and Genblaze feedback draft
@@ -174,7 +190,8 @@ Do not bake `.env` into the image or expose provider/B2 credentials to the brows
 | Real Genblaze pipeline and manifest run locally | Confirmed |
 | Content-addressed storage and byte tamper detection | Confirmed locally |
 | Responsive desktop/mobile UI | Confirmed in Codex's in-app browser |
-| B2 integration code exists | Confirmed by inspection/tests that do not call B2 |
+| B2 integration and B2-backed run-index code exists | Confirmed by inspection/fake tests that do not call B2 |
+| Vercel Services source configuration | Confirmed locally; **not deployed** |
 | Successful real B2 upload/read-back | **Not yet confirmed: credentials required** |
 | Successful paid AI-provider generation | **Not yet confirmed: provider credential/credit required** |
 | Public GitHub repository | Confirmed: <https://github.com/gother111/backblaze-provenance-vault> |

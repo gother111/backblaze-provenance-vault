@@ -17,7 +17,9 @@ The code, local rehearsal, public source repository, and Genblaze repository sta
 
 3. **Public deployment**
    - choose/authorize a hosting account;
-   - deploy the included Docker service with HTTPS and a persistent volume;
+   - for Vercel, create/link the project, select the **Services** Framework Preset, and deploy the
+     included Vite `/` plus FastAPI `/api` services; or deploy the included Docker service with
+     HTTPS and its explicit persistent volume;
    - add server-side secrets;
    - pass every check in `docs/DEPLOYMENT.md` from a private browser window.
 

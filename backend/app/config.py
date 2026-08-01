@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -28,14 +29,20 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> Settings:
-        data_value = _env("PROVENANCE_DATA_DIR", "data")
-        data_dir = Path(data_value)
-        if not data_dir.is_absolute():
-            data_dir = ROOT / data_dir
+        storage_mode = _env("PROVENANCE_STORAGE_MODE", "local")
+        data_value = _env("PROVENANCE_DATA_DIR")
+        if data_value:
+            data_dir = Path(data_value)
+            if not data_dir.is_absolute():
+                data_dir = ROOT / data_dir
+        elif storage_mode == "b2":
+            data_dir = Path(tempfile.gettempdir()) / "provenance-vault"
+        else:
+            data_dir = ROOT / "data"
         return cls(
             data_dir=data_dir.resolve(),
             default_provider=_env("PROVENANCE_DEFAULT_PROVIDER", "local"),
-            storage_mode=_env("PROVENANCE_STORAGE_MODE", "local"),
+            storage_mode=storage_mode,
             b2_key_id=_env("B2_KEY_ID"),
             b2_app_key=_env("B2_APP_KEY"),
             b2_bucket=_env("B2_BUCKET"),

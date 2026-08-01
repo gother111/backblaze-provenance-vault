@@ -16,7 +16,8 @@ Provenance Vault should answer one narrow question well: **does this exact media
    - live: `ObjectStorageSink(S3StorageBackend.for_backblaze(...))` writes with `KeyStrategy.CONTENT_ADDRESSABLE` and strict manifest reads.
 5. Genblaze creates the canonical manifest and its canonical hash.
 6. The service derives the stored object key, reads the final bytes, and independently calculates SHA-256.
-7. A small atomic JSON repository stores the UI run index and a local copy of the canonical manifest.
+7. The repository factory stores the UI run index and canonical manifest copy on the filesystem in
+   local mode, or in B2 when `storage_mode=b2` and B2 is fully configured.
 8. The React client renders the media, provenance steps, B2/local storage key, hashes, and verification actions.
 
 ## Why both checks matter
@@ -41,6 +42,8 @@ The live path uses B2 through Genblaze's S3 connector rather than treating B2 as
 - strict manifest reads catch unavailable or inconsistent manifest storage.
 - the app reads the B2 object back during creation and on every manual verification.
 - the asset endpoint streams the B2 object through the backend, so a private bucket can remain private.
+- the app repository uses Genblaze S3 `put`, `get`, and paginated `list` operations for the full
+  run record and canonical manifest copy used by the searchable library.
 
 This is meaningful data orchestration: B2 is the integrity boundary for the creator's final asset, not only a place to host a screenshot.
 
@@ -71,9 +74,27 @@ The upstream repository was at release tag `v0.7.0` during implementation; Genbl
 
 ## Persistence boundary
 
-B2 is durable for live assets and canonical manifests. The run-library index is intentionally a small filesystem repository for hackathon scope. A public deployment must mount a persistent volume at `PROVENANCE_DATA_DIR`; otherwise the UI's index can reset on redeploy even though B2 objects remain safe.
+Local rehearsal keeps the run record, manifest copy, and deterministic provider output under
+`PROVENANCE_DATA_DIR`; its atomic JSON repository remains the Docker/local path. When
+`PROVENANCE_STORAGE_MODE=b2` and all B2 settings are present, the factory instead selects the
+B2-backed repository at `provenance-vault/app-index/v1/`.
 
-The next production step would be a B2-backed run-index snapshot or a transactional database. That is not necessary to demonstrate the core integrity workflow and would add risk before the deadline.
+Each B2 repository save writes the canonical manifest first and the full `RunRecord` last. Listing
+walks only record keys, so a failure after the manifest upload but before the record upload can
+leave an unreferenced manifest object but cannot expose an incomplete run in the UI. Unit tests
+exercise this commit-marker behavior, missing objects, and pagination through an in-memory fake;
+they make no B2 request. A real B2 persistence cycle remains unconfirmed until credentials are
+provided and the live acceptance gate passes.
+
+In B2 mode, `PROVENANCE_DATA_DIR` is only provider staging. If the variable is absent, it defaults
+to an OS temporary directory suitable for a stateless runtime; those files may disappear between
+requests and are never the source of truth. Docker keeps its explicit `/app/data` setting and
+volume path unchanged.
+
+The Vercel Services backend declares prefix-free routes because the platform strips its `/api`
+route prefix before dispatch. The local/Docker app still declares `/api/*`, and both expose the
+same public URLs. The Vercel entrypoint also disables automatic demo seeding so a cold start does
+not generate media or write B2 objects.
 
 ## Security notes
 

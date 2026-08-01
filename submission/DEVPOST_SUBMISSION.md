@@ -31,11 +31,14 @@ generation from bypassing the required storage and provenance flow.
 - **Real-world utility:** preserves the prompt, model, parameters, timestamps, and exact output
   digest when creative media moves between tools or teams.
 - **Production readiness:** includes explicit failure states, private-object proxying, secret
-  redaction, persistent deployment guidance, responsive UI checks, automated tests, and a
-  single-service Docker build. These are locally verified; public deployment remains pending.
+  redaction, B2-backed serverless persistence, responsive UI checks, automated tests, and both
+  Docker and Vercel Services deployment source. These are locally verified; public deployment
+  remains pending.
 - **B2 storage and data orchestration:** the implemented live path uses Genblaze's B2-compatible
   object-storage sink, content-addressed keys, asset/manifest persistence, and independent B2
-  byte read-back. A real B2 upload/read-back is still pending live evidence.
+  byte read-back. The app index also persists its manifest/record pair through Genblaze S3
+  `put/get/list`; unit fakes verify behavior without a cloud call. A real B2 upload/read-back is
+  still pending live evidence.
 - **Use of Genblaze:** the local rehearsal confirms a real Genblaze `Pipeline`, run/step model,
   canonical manifest, asset digest, and verification flow. The live provider connector and exact
   provider/model must be confirmed by the final run.
@@ -65,7 +68,9 @@ Confirmed locally:
 - Genblaze creates the run, asset digest, and canonical manifest;
 - content-addressed local storage, independent byte re-hashing, and tamper detection work;
 - automated lint, backend/frontend tests, type-checking, and frontend build pass;
-- B2 and live-provider integration code exists and is covered without making a cloud call.
+- B2/live-provider integration and B2-backed run-index code exists and is covered without making
+  a cloud call;
+- Vercel Services routing and dependency source exists, but no Vercel deployment has been made.
 
 Still required before submission:
 

@@ -11,7 +11,7 @@ from genblaze_s3 import S3StorageBackend
 
 from .config import Settings
 from .local_provider import LocalPosterProvider
-from .repository import RunRepository
+from .repository import BackendFactory, RepositoryBackend, create_run_repository
 from .schemas import (
     CreateRunRequest,
     ProvenanceStep,
@@ -55,9 +55,15 @@ class ConfigurationError(RuntimeError):
 
 
 class ProvenanceService:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        *,
+        backend_factory: BackendFactory | None = None,
+    ) -> None:
         self.settings = settings
-        self.repository = RunRepository(settings.data_dir)
+        self._backend_factory = backend_factory or self._configured_b2_backend
+        self.repository = create_run_repository(settings, self._backend_factory)
 
     def ensure_demo_run(self) -> RunRecord:
         existing = self.repository.list()
@@ -242,7 +248,10 @@ class ProvenanceService:
             strict_manifest_reads=True,
         )
 
-    def _b2_backend(self) -> S3StorageBackend:
+    def _b2_backend(self) -> RepositoryBackend:
+        return self._backend_factory()
+
+    def _configured_b2_backend(self) -> S3StorageBackend:
         kwargs: dict[str, Any] = {
             "region": self.settings.b2_region,
             "key_id": self.settings.b2_key_id,

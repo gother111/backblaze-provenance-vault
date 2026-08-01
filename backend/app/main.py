@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import APIRouter, FastAPI, HTTPException, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -11,7 +11,13 @@ from .schemas import CreateRunRequest, RunRecord, VerificationResult
 from .service import ConfigurationError, ProvenanceService
 
 
-def create_app(settings: Settings | None = None, *, seed_demo: bool = True) -> FastAPI:
+def create_app(
+    settings: Settings | None = None,
+    *,
+    seed_demo: bool = True,
+    api_prefix: str = "/api",
+    serve_frontend: bool = True,
+) -> FastAPI:
     resolved_settings = settings or Settings.from_env()
     service = ProvenanceService(resolved_settings)
 
@@ -28,20 +34,21 @@ def create_app(settings: Settings | None = None, *, seed_demo: bool = True) -> F
         description="Genblaze media generation with verifiable local or Backblaze B2 storage.",
         lifespan=lifespan,
     )
+    router = APIRouter(prefix=api_prefix)
 
-    @app.get("/api/health")
+    @router.get("/health")
     def health() -> dict[str, object]:
         return service.health()
 
-    @app.get("/api/config")
+    @router.get("/config")
     def config() -> dict[str, object]:
         return resolved_settings.public_capabilities()
 
-    @app.get("/api/runs", response_model=list[RunRecord])
+    @router.get("/runs", response_model=list[RunRecord])
     def list_runs() -> list[RunRecord]:
         return service.repository.list()
 
-    @app.post("/api/runs", response_model=RunRecord, status_code=201)
+    @router.post("/runs", response_model=RunRecord, status_code=201)
     def create_run(payload: CreateRunRequest) -> RunRecord:
         try:
             return service.create_run(payload)
@@ -50,28 +57,28 @@ def create_app(settings: Settings | None = None, *, seed_demo: bool = True) -> F
         except RuntimeError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    @app.get("/api/runs/{run_id}", response_model=RunRecord)
+    @router.get("/runs/{run_id}", response_model=RunRecord)
     def get_run(run_id: str) -> RunRecord:
         record = service.repository.get(run_id)
         if record is None:
             raise HTTPException(status_code=404, detail="Run not found")
         return record
 
-    @app.get("/api/runs/{run_id}/manifest")
+    @router.get("/runs/{run_id}/manifest")
     def get_manifest(run_id: str) -> dict[str, object]:
         try:
             return service.manifest_json(run_id)
         except KeyError as exc:
             raise HTTPException(status_code=404, detail="Manifest not found") from exc
 
-    @app.post("/api/runs/{run_id}/verify", response_model=VerificationResult)
+    @router.post("/runs/{run_id}/verify", response_model=VerificationResult)
     def verify_run(run_id: str) -> VerificationResult:
         try:
             return service.verify_run(run_id)
         except KeyError as exc:
             raise HTTPException(status_code=404, detail="Run not found") from exc
 
-    @app.get("/api/runs/{run_id}/asset")
+    @router.get("/runs/{run_id}/asset")
     def get_asset(run_id: str) -> Response:
         try:
             payload, media_type = service.asset_bytes(run_id)
@@ -85,8 +92,10 @@ def create_app(settings: Settings | None = None, *, seed_demo: bool = True) -> F
             headers={"Cache-Control": "public, max-age=31536000, immutable"},
         )
 
+    app.include_router(router)
+
     frontend_dist = ROOT / "frontend" / "dist"
-    if frontend_dist.exists():
+    if serve_frontend and frontend_dist.exists():
         assets_dir = frontend_dist / "assets"
         if assets_dir.exists():
             app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")

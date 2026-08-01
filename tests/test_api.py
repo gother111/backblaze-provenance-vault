@@ -59,3 +59,22 @@ def test_api_rejects_live_provider_without_server_credentials(settings: Settings
 
     assert response.status_code == 409
     assert "B2" in response.json()["detail"]
+
+
+def test_vercel_internal_routes_omit_stripped_api_prefix(settings: Settings) -> None:
+    app = create_app(
+        settings,
+        seed_demo=False,
+        api_prefix="",
+        serve_frontend=False,
+    )
+    with TestClient(app) as client:
+        assert client.get("/health").status_code == 200
+        assert client.get("/api/health").status_code == 404
+
+
+def test_local_routes_keep_public_api_prefix(settings: Settings) -> None:
+    app = create_app(settings, seed_demo=False, serve_frontend=False)
+    with TestClient(app) as client:
+        assert client.get("/api/health").status_code == 200
+        assert client.get("/health").status_code == 404
