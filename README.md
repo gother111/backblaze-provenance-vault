@@ -4,7 +4,7 @@
 
 ![Provenance Vault desktop interface](submission/assets/provenance-vault-desktop.png)
 
-This repository is an entry candidate for the [Backblaze Generative Media Hackathon](https://backblaze-generative-media.devpost.com/). It is deliberately honest about readiness: the local mode is fully exercised, while live B2 and paid AI-provider calls require the account credentials listed in [submission/BLOCKERS.md](submission/BLOCKERS.md).
+This repository is an entry candidate for the [Backblaze Generative Media Hackathon](https://backblaze-generative-media.devpost.com/). It is deliberately honest about readiness: the local mode is fully exercised, while live B2 and AI-provider calls require the account credentials and terms listed in [submission/BLOCKERS.md](submission/BLOCKERS.md).
 
 Public source: <https://github.com/gother111/backblaze-provenance-vault>
 
@@ -25,7 +25,7 @@ The result is not a vague “AI generated” badge. It is a reproducible evidenc
 | Mode | What runs | What it proves |
 | --- | --- | --- |
 | Local rehearsal | Real Genblaze `Pipeline`, deterministic local SVG provider, content-addressed local object, canonical manifest, byte re-hash | UI, orchestration, persistence, manifest validation, tamper detection. It does **not** claim AI generation or a B2 upload. |
-| Live entry | Genblaze GMI Cloud or OpenAI provider, Genblaze B2 object-storage sink, B2 read-back, manifest and byte verification | The actual competition integration after credentials and one successful end-to-end run are supplied. |
+| Live entry | Genblaze GMI Cloud, OpenAI, or NVIDIA NIM provider; Genblaze B2 object-storage sink; B2 read-back; manifest and byte verification | The actual competition integration after credentials and one successful end-to-end run are supplied. |
 
 The UI labels local output `OFFLINE REHEARSAL` and shows `LOCAL DEMO` in the header. Live claims should only be used after completing the evidence gate in [submission/SUBMISSION_CHECKLIST.md](submission/SUBMISSION_CHECKLIST.md).
 
@@ -37,7 +37,7 @@ flowchart LR
     B --> C["Genblaze Pipeline"]
     C --> D{"Provider"}
     D -->|rehearsal| E["Deterministic SVG provider"]
-    D -->|live| F["GMI Cloud or OpenAI"]
+    D -->|live| F["GMI Cloud, OpenAI, or NVIDIA NIM"]
     E --> G{"Storage mode"}
     F --> G
     G -->|rehearsal| H["Local content-addressed object"]
@@ -116,12 +116,32 @@ OPENAI_IMAGE_MODEL=gpt-image-2
 PROVENANCE_DEFAULT_PROVIDER=openai
 ```
 
-Restart the API after changing environment variables. A live provider is intentionally rejected unless B2 is also configured. This prevents a successful paid generation from bypassing the competition's storage requirement.
+The organizer's current multi-provider sample identifies NVIDIA NIM as a free,
+no-card image-generation route based on its July 2026 research, while explicitly warning that
+offers can change and must be confirmed in the provider console. This app prepares that route
+through the official `genblaze-nvidia==0.3.3` image provider running inside the existing Genblaze
+`Pipeline`:
+
+```dotenv
+NVIDIA_API_KEY=...
+NVIDIA_IMAGE_MODEL=black-forest-labs/flux.1-schnell
+PROVENANCE_DEFAULT_PROVIDER=nvidia
+```
+
+The resolved stack is `genblaze==0.4.5` with `genblaze-core==0.3.8` and
+`genblaze-nvidia==0.3.3`. Those are the package versions published for the official Genblaze
+`v0.7.0` release wave, and the connector's declared `genblaze-core>=0.3.7,<0.4` range is
+satisfied. A network-free test exercises the installed connector's request and inline-image
+response path. This is package/source alignment only: NVIDIA account access, current free-tier
+availability, model availability, quota, response compatibility, and a real output remain
+unconfirmed until one authorized live run succeeds.
+
+Restart the API after changing environment variables. A live provider is intentionally rejected unless B2 is also configured. This prevents a successful live generation from bypassing the competition's storage requirement.
 
 Run one new asset, press **Verify bytes**, then confirm all of the following before recording the demo:
 
 - the header says `B2 CONNECTED`;
-- the selected provider is GMI Cloud or OpenAI;
+- the selected provider is GMI Cloud, OpenAI, or NVIDIA NIM;
 - the run's storage mode is `b2`;
 - the storage key is content-addressed and contains the asset SHA-256;
 - manifest verification and byte verification both pass;
@@ -147,7 +167,7 @@ Interactive API documentation is available at `/docs` while the service is runni
 make verify
 ```
 
-This runs Python linting, backend tests, TypeScript checking, frontend tests, and the production frontend build. The backend suite covers actual local Genblaze orchestration, canonical manifests, content-addressed keys, a directory containing spaces, API behavior, secret redaction, provider-size contracts, byte-tampering detection, B2 repository behavior through network-free fakes, and the Vercel route-prefix boundary.
+This runs Python linting, backend tests, TypeScript checking, frontend tests, and the production frontend build. The backend suite covers actual local Genblaze orchestration, canonical manifests, content-addressed keys, a directory containing spaces, API behavior, secret redaction, OpenAI size contracts, network-free NVIDIA response parsing, byte-tampering detection, B2 repository behavior through network-free fakes, the Vercel route-prefix boundary, and parity between root and service-specific runtime-provider dependencies.
 
 ## Deployment
 
@@ -184,17 +204,18 @@ Do not bake `.env` into the image or expose provider/B2 credentials to the brows
 
 ## Current evidence status
 
-| Claim | Status on 2026-08-01 |
+| Claim | Status on 2026-08-02 |
 | --- | --- |
 | App works locally | Confirmed |
 | Real Genblaze pipeline and manifest run locally | Confirmed |
 | Content-addressed storage and byte tamper detection | Confirmed locally |
-| Responsive desktop/mobile UI | Confirmed in Codex's in-app browser |
+| Responsive desktop/mobile UI | Current local NVIDIA-selector build confirmed in Chrome at 1440 × 1000, 390 × 844, and 320 × 740 after fixing an exact-320 px horizontal-overflow defect; physical-device and final public-deployment QA remain pending |
 | B2 integration and B2-backed run-index code exists | Confirmed by inspection/fake tests that do not call B2 |
 | Vercel Services source configuration | Confirmed locally; **not deployed** |
 | Successful real B2 upload/read-back | **Not yet confirmed: credentials required** |
-| Successful paid AI-provider generation | **Not yet confirmed: provider credential/credit required** |
-| Public GitHub repository | Confirmed: <https://github.com/gother111/backblaze-provenance-vault> |
+| Successful real AI-provider generation | **Not yet confirmed: provider account/key required; NVIDIA is the prepared candidate route, with current offer/model access unverified** |
+| Public GitHub repository | Confirmed; verify that `origin/main` matches the exact final source receipt before deployment or submission |
+| Local rehearsal judge video | Confirmed locally at 2:44; truth-labeled, validated, and not uploaded; see [`submission/LOCAL_REHEARSAL_VIDEO.md`](submission/LOCAL_REHEARSAL_VIDEO.md) |
 | Public app, public demo video, Devpost submission | **Not yet created** |
 
 Do not collapse these states. A compliant final entry needs the last three rows completed before the deadline.
@@ -206,6 +227,7 @@ Do not collapse these states. A compliant final entry needs the last three rows 
 - [Hackathon resources](https://backblaze-generative-media.devpost.com/resources)
 - [Hackathon updates](https://backblaze-generative-media.devpost.com/updates)
 - [Genblaze repository](https://github.com/backblaze-labs/genblaze)
+- [Official Backblaze multi-provider sample and candidate NVIDIA route](https://github.com/backblaze-labs/genblaze-gen-media-multi-provider-sample)
 - [Backblaze B2 APIs](https://www.backblaze.com/docs/cloud-storage-apis)
 - [Backblaze S3-compatible API](https://www.backblaze.com/docs/cloud-storage-call-the-s3-compatible-api)
 

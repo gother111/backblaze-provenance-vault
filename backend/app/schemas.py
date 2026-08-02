@@ -10,6 +10,7 @@ class ProviderName(StrEnum):
     LOCAL = "local"
     GMICLOUD = "gmicloud"
     OPENAI = "openai"
+    NVIDIA = "nvidia"
 
 
 class OutputFormat(StrEnum):

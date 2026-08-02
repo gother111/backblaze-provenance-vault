@@ -216,6 +216,19 @@ wheels = [
 ]
 
 [[package]]
+name = "genblaze-nvidia"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "genblaze-core" },
+    { name = "httpx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a1/fa/f06dae5f8d1d608f5ef1f3456ff78aefa110ba24860638d27fbe54cd3245/genblaze_nvidia-0.3.3.tar.gz", hash = "sha256:4bf0ebdcf833f383eb421d4bbc0a9251d928c12c64c3972d7409ade60e7910e7", size = 39364, upload-time = "2026-07-28T20:50:53.306Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f6/f4/c808159059ef27f0d51edf6f02044870c64930926c2c9a23c0401223a791/genblaze_nvidia-0.3.3-py3-none-any.whl", hash = "sha256:44fc1f5e7094ca34629fe5d1bcbc541c248186c292d60b1a7428144492ea2dfe", size = 37477, upload-time = "2026-07-28T20:50:51.969Z" },
+]
+
+[[package]]
 name = "genblaze-openai"
 version = "0.3.4"
 source = { registry = "https://pypi.org/simple" }
@@ -500,6 +513,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "genblaze" },
     { name = "genblaze-gmicloud" },
+    { name = "genblaze-nvidia" },
     { name = "genblaze-openai" },
     { name = "httpx" },
     { name = "uvicorn", extra = ["standard"] },
@@ -517,6 +531,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.116,<1" },
     { name = "genblaze", specifier = "==0.4.5" },
     { name = "genblaze-gmicloud", specifier = "==0.3.5" },
+    { name = "genblaze-nvidia", specifier = "==0.3.3" },
     { name = "genblaze-openai", specifier = "==0.3.4" },
     { name = "httpx", specifier = ">=0.28,<1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.4,<9" },

@@ -1,4 +1,4 @@
-export type ProviderName = "local" | "gmicloud" | "openai";
+export type ProviderName = "local" | "gmicloud" | "openai" | "nvidia";
 export type OutputFormat = "square" | "portrait" | "landscape";
 export type Palette = "clay" | "moss" | "night";
 

@@ -23,7 +23,7 @@ with the manifest, keeping manifest integrity and current-object integrity as se
 A creator enters a title and brief, chooses a format, palette, and provider, and selects
 **Generate & seal**. The interface presents the resulting media, provider/model, storage key,
 asset digest, canonical manifest hash, verification status, manifest viewer, and run library.
-The live-provider path is deliberately blocked unless B2 is also configured, preventing a paid
+The live-provider path is deliberately blocked unless B2 is also configured, preventing a live
 generation from bypassing the required storage and provenance flow.
 
 ## Judging alignment
@@ -31,9 +31,10 @@ generation from bypassing the required storage and provenance flow.
 - **Real-world utility:** preserves the prompt, model, parameters, timestamps, and exact output
   digest when creative media moves between tools or teams.
 - **Production readiness:** includes explicit failure states, private-object proxying, secret
-  redaction, B2-backed serverless persistence, responsive UI checks, automated tests, and both
-  Docker and Vercel Services deployment source. These are locally verified; public deployment
-  remains pending.
+  redaction, B2-backed serverless persistence, responsive source rules, automated tests, and both
+  Docker and Vercel Services deployment source. The current local NVIDIA-selector build was
+  browser-verified at desktop, 390 px, and 320 px widths after fixing the exact-320 px overflow.
+  Public deployment and physical-device QA remain pending.
 - **B2 storage and data orchestration:** the implemented live path uses Genblaze's B2-compatible
   object-storage sink, content-addressed keys, asset/manifest persistence, and independent B2
   byte read-back. The app index also persists its manifest/record pair through Genblaze S3
@@ -45,7 +46,7 @@ generation from bypassing the required storage and provenance flow.
 
 ## AI provider and model
 
-- Final live provider: `PENDING_FROM_LIVE_RUN`
+- Final live provider: `PENDING_FROM_LIVE_RUN` (`nvidia`, `gmicloud`, or `openai`)
 - Final live model: `PENDING_FROM_LIVE_RUN`
 - Development rehearsal only: `provenance-vault-local` / `procedural-editorial-v1`
 
@@ -60,6 +61,21 @@ provider from the final Devpost fields.
 - Demo video under three minutes: `PENDING_PUBLIC_VIDEO_URL`
 - Devpost project draft: <https://devpost.com/software/provenance-vault> (project ID `1369439`)
 
+## Live Devpost requirement snapshot
+
+Read-only Devpost checks at `2026-08-02T03:32:00Z` confirmed that submissions are open, the
+authenticated account can register but is not registered, and project `1369439` remains an
+unpublished draft with no hackathon association and no video. The final submission requires a
+video plus these custom fields:
+
+- `27756` App URL: functional judge-accessible app URL;
+- `27757` GitHub Repo URL: repository with setup instructions;
+- `27760` Providers and models: exact provider/model from the verified live run;
+- `27761` B2 and Genblaze usage: exact explanation grounded in that same run.
+
+Do not transmit any registration agreement or submission until the entrant supplies the required
+personal confirmations and every live-evidence value is resolved.
+
 ## Truth boundary
 
 Confirmed locally:
@@ -68,6 +84,9 @@ Confirmed locally:
 - Genblaze creates the run, asset digest, and canonical manifest;
 - content-addressed local storage, independent byte re-hashing, and tamper detection work;
 - automated lint, backend/frontend tests, type-checking, and frontend build pass;
+- the current local NVIDIA-selector build was browser-verified at desktop, 390 px, and 320 px
+  widths after fixing the exact-320 px overflow; public-deployment and physical-device QA remain
+  pending;
 - B2/live-provider integration and B2-backed run-index code exists and is covered without making
   a cloud call;
 - Vercel Services routing and dependency source exists, but no Vercel deployment has been made.

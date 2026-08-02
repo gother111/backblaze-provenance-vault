@@ -28,6 +28,7 @@ const providers: { value: ProviderName; label: string }[] = [
   { value: "local", label: "Local demo" },
   { value: "gmicloud", label: "GMI Cloud" },
   { value: "openai", label: "OpenAI" },
+  { value: "nvidia", label: "NVIDIA NIM" },
 ];
 
 export function GeneratorPanel({

@@ -18,6 +18,7 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 - [x] `README.md` installs and verifies successfully from a clean clone at `f6d1d235f509ffd92e5c502724b1b45878339949`.
 - [x] GitHub detects the repository's MIT license; listed third-party packages and integrations match the source.
 - [ ] `make verify` passes on the exact final commit.
+- [ ] `uv lock --check` passes on the exact final commit.
 - [ ] Final commit hash is recorded: `________________`.
 
 ## C. Real B2 + Genblaze evidence
@@ -26,6 +27,8 @@ Deadline from the official pages: **August 3, 2026 at 5:00 PM EDT**, equivalent 
 - [ ] `PROVENANCE_STORAGE_MODE=b2` on the public deployment.
 - [ ] Header says `B2 CONNECTED`.
 - [ ] Selected provider is a real Genblaze generative-media connector.
+- [ ] If NVIDIA is used, the authorized provider console confirms the exact configured model is
+      currently available; no account or credential detail is recorded in submission artifacts.
 - [ ] Fresh live run succeeds from the public UI.
 - [ ] Actual provider/model recorded: `________________` / `________________`.
 - [ ] Run ID recorded: `________________`.

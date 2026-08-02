@@ -7,6 +7,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 from genblaze_core import KeyStrategy, Modality, ObjectStorageSink, Pipeline, parse_manifest
+from genblaze_nvidia import NvidiaImageProvider
 from genblaze_s3 import S3StorageBackend
 
 from .config import Settings
@@ -25,6 +26,8 @@ GMI_ASPECT_RATIOS = {
     "portrait": "4:5",
     "landscape": "3:2",
 }
+
+NVIDIA_ASPECT_RATIOS = GMI_ASPECT_RATIOS
 
 
 def openai_size_for(model: str, output_format: str) -> str:
@@ -215,6 +218,17 @@ class ProvenanceService:
                 GMICloudImageProvider(api_key=self.settings.gmi_api_key),
                 self.settings.gmi_image_model,
                 {"aspect_ratio": GMI_ASPECT_RATIOS[request.output_format.value]},
+            )
+        if request.provider is ProviderName.NVIDIA:
+            if not self.settings.nvidia_ready:
+                raise ConfigurationError("NVIDIA_API_KEY is not configured")
+            return (
+                NvidiaImageProvider(
+                    api_key=self.settings.nvidia_api_key,
+                    output_dir=self.settings.data_dir / "provider-staging",
+                ),
+                self.settings.nvidia_image_model,
+                {"aspect_ratio": NVIDIA_ASPECT_RATIOS[request.output_format.value]},
             )
         if not self.settings.openai_ready:
             raise ConfigurationError("OPENAI_API_KEY is not configured")

@@ -8,10 +8,12 @@ been created or modified.
 
 - Python 3.11–3.13 runtime (the Docker image uses 3.12)
 - `PROVENANCE_STORAGE_MODE=b2`
-- `PROVENANCE_DEFAULT_PROVIDER=gmicloud` or `openai`
+- `PROVENANCE_DEFAULT_PROVIDER=gmicloud`, `openai`, or `nvidia`
 - private B2 bucket plus a bucket-scoped key with read, write, and list access
 - B2 bucket, region, key ID, and application key entered only as server-side secrets
-- corresponding AI-provider API key and sufficient credit
+- corresponding AI-provider API key and any required account access or credit; NVIDIA NIM is the
+  prepared candidate no-spend path, but current availability, terms, model access, and quota must
+  be verified in the authorized provider console
 - HTTPS public URL
 
 Docker also needs a writable `PROVENANCE_DATA_DIR`; the included image explicitly uses
@@ -32,6 +34,12 @@ Before any Vercel build, set **Project Settings → Build & Deployment → Frame
 **Services**. Without that preset, valid service routes can return 404. Keep the repository root
 as the Vercel project root so the single root `vercel.json` can discover both entrypoints.
 
+The backend service has its own [`backend/pyproject.toml`](../backend/pyproject.toml). It declares
+the same pinned Genblaze, GMI Cloud, NVIDIA, and OpenAI runtime providers as the root project;
+`tests/test_deployment_dependencies.py` fails if those deployment dependencies drift. A
+non-mutating `uv pip compile backend/pyproject.toml --no-header --no-annotate`
+resolution must pass before deployment.
+
 Vercel removes `/api` before forwarding a backend request. The Vercel entrypoint therefore
 declares internal `/health`, `/runs`, and related routes, while public clients and the React app
 continue to use `/api/health`, `/api/runs`, and the rest of the existing API. The local/Docker
@@ -42,6 +50,28 @@ For a Vercel project, enter the required B2 and provider settings in Vercel's se
 environment settings. Do not prefix them with `VITE_`, and do not set `PROVENANCE_DATA_DIR`
 unless it points to an explicitly writable runtime location. No credential value belongs in
 `vercel.json`, Git, build output, frontend variables, or deployment logs.
+
+### Final source and NVIDIA preflight
+
+Run these checks against the exact checkout intended for deployment:
+
+```bash
+git status --short --branch
+uv lock --check
+make verify
+uv pip compile backend/pyproject.toml --no-header --no-annotate
+git rev-parse HEAD
+```
+
+Record the final 40-character commit only after the intended changes are committed and visible at
+the public repository URL. A passing dirty-tree check is useful local evidence, but it is not a
+receipt for the public commit.
+
+If NVIDIA is selected, first confirm in the authorized NVIDIA console that the exact configured
+model is currently available to that account. Do not record the key, account ID, console page, or
+quota details in Git. The local package/version reconciliation and network-free fake establish
+only the expected connector shape. Compatibility remains unconfirmed until the final deployment
+returns a fresh real output and the same run passes the B2 evidence gate.
 
 ### Serverless persistence truth boundary
 
@@ -80,7 +110,7 @@ Run these checks against the final HTTPS origin before using it in Devpost:
 2. The app loads in a clean/private browser window without login or a local-network dependency.
 3. The header says `B2 CONNECTED` and the live provider is selected by default.
 4. A fresh generation completes from the public UI.
-5. The resulting provider/model are the actual paid provider and model.
+5. The resulting provider/model are the actual live provider and model.
 6. The storage key includes the exact asset SHA-256.
 7. **Open manifest** displays a canonical Genblaze manifest.
 8. **Verify bytes** passes after reading the object back from B2.

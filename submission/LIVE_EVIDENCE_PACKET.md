@@ -8,10 +8,28 @@ This tracked file is a blank template. Copy it to `.submission-private/live-evid
 filling it. The private folder is ignored by Git. Never record credentials, authorization
 headers, provider account IDs, or secret-manager screenshots.
 
-Current state on 2026-08-01: **template ready; no live B2/provider run or public deployment has
+Current state on 2026-08-02: **template ready; no live B2/provider run or public deployment has
 been evidenced.**
 
-## 1. Freeze one evidence run
+## 1. Freeze the final source before deployment
+
+Run these checks from the exact checkout intended for deployment:
+
+```bash
+git status --short --branch
+uv lock --check
+make verify
+uv pip compile backend/pyproject.toml --no-header --no-annotate
+git rev-parse HEAD
+```
+
+Do not fill the final-source row from an uncommitted or dirty tree. After an intentional final
+commit is made and published, confirm that the public repository shows the same full SHA. If NVIDIA is the
+selected provider, confirm the exact model is available to the authorized account before setting
+the deployment default. Do not record a credential, account ID, private console URL, or quota
+screen. Package versions, selector screenshots, and mocked responses are not compatibility proof.
+
+## 2. Freeze one evidence run
 
 Use a fresh run created from the public UI. Do not use the seeded local rehearsal.
 
@@ -26,7 +44,7 @@ Use a fresh run created from the public UI. Do not use the seeded local rehearsa
 Do not switch to a second run halfway through. The run ID, provider/model, object key, asset
 digest, manifest hash, and verification timestamp must all describe the same run.
 
-## 2. Evidence manifest
+## 3. Evidence manifest
 
 Fill `Observed value` only from the public UI, API response, Git, video host, or B2 console.
 Leave a row `PENDING` if its proof surface has not been checked.
@@ -34,13 +52,15 @@ Leave a row `PENDING` if its proof surface has not been checked.
 | Claim | Required observed value | Authoritative proof surface | Observed value | Evidence handle |
 | --- | --- | --- | --- | --- |
 | Final source | Full 40-character commit SHA | `git rev-parse HEAD` and public GitHub commit | PENDING | PENDING |
+| Lock consistency | `uv lock --check` passes | Exact final checkout | PENDING | PENDING |
+| Final source checks | `make verify` passes | Exact final checkout | PENDING | PENDING |
 | Public app | HTTPS origin | Clean private browser | PENDING | PENDING |
 | Anonymous access | Loads with no login or local dependency | Clean private browser | PENDING | PENDING |
 | API health | HTTP 200 and `status: ok` | `GET /api/health` | PENDING | PENDING |
 | Storage mode | `b2` | Run JSON and app header | PENDING | PENDING |
 | B2 readiness | `configured: true` | Health JSON | PENDING | PENDING |
 | B2 region | Exact non-secret region | Health JSON | PENDING | PENDING |
-| Live provider | `gmicloud` or `openai`, matching the UI | Run JSON | PENDING | PENDING |
+| Live provider | `nvidia`, `gmicloud`, or `openai`, matching the UI | Run JSON | PENDING | PENDING |
 | Live model | Exact model slug returned by Genblaze | Run JSON | PENDING | PENDING |
 | Run identity | Exact run ID; `is_demo: false` | Run JSON | PENDING | PENDING |
 | B2 asset key | Exact content-addressed `storage_key` | Run JSON and B2 console | PENDING | PENDING |
@@ -63,7 +83,7 @@ Leave a row `PENDING` if its proof surface has not been checked.
 `Evidence handle` should be a URL, screenshot filename, video timecode, or a short note such as
 `B2 console checked 2026-08-02T18:42:00Z`. Do not paste secrets or full private console pages.
 
-## 3. Read-only API cross-check
+## 4. Read-only API cross-check
 
 After copying the exact public origin and run ID from the browser, run these commands. They do
 not create a generation. The verification request re-reads the already stored object from B2.
@@ -73,6 +93,9 @@ ENTRY_ORIGIN='https://replace-with-final-origin.example'
 EVIDENCE_RUN_ID='replace-with-live-run-id'
 
 curl --fail --silent --show-error "$ENTRY_ORIGIN/api/health" \
+  | python3 -m json.tool
+
+curl --fail --silent --show-error "$ENTRY_ORIGIN/api/config" \
   | python3 -m json.tool
 
 curl --fail --silent --show-error "$ENTRY_ORIGIN/api/runs/$EVIDENCE_RUN_ID" \
@@ -95,7 +118,7 @@ Review output before saving or sharing it. The health response includes the conf
 name, and the manifest contains the public demo prompt and provider metadata. It should never
 contain keys, tokens, or authorization headers.
 
-## 4. Screenshot and video evidence
+## 5. Screenshot and video evidence
 
 Capture only the final live deployment. Suggested evidence handles:
 
@@ -109,7 +132,7 @@ Capture only the final live deployment. Suggested evidence handles:
 In the demo, the same proof should appear at the timecodes in `DEMO_SCRIPT.md`. Do not show a
 credential console, environment variables, browser autofill, notifications, or a local-mode run.
 
-## 5. Copy-ready live evidence paragraph
+## 6. Copy-ready live evidence paragraph
 
 Replace every `PENDING` token below only after the evidence manifest is complete. The provider
 name and model must be copied from the run JSON, not from configuration defaults.
@@ -124,7 +147,7 @@ name and model must be copied from the run JSON, not from configuration defaults
 Paste the completed paragraph into the live-evidence marker in `DEVPOST_DRAFT.md`. Remove any
 unused provider from both **AI providers and models** and **Built with**.
 
-## 6. Final reconciliation
+## 7. Final reconciliation
 
 Before submitting, compare all four surfaces:
 

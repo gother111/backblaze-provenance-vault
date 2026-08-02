@@ -28,7 +28,7 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
   background-color: var(--paper);
   background-image: radial-gradient(rgba(21, 33, 28, 0.045) 0.45px, transparent 0.55px);

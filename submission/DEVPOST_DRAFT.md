@@ -1,6 +1,6 @@
 # Devpost draft
 
-> **Evidence rule:** text in `[VERIFY: ...]` brackets is not yet established. Replace it with the exact live result or remove the claim. Do not submit the local rehearsal as proof of B2 or paid-AI generation.
+> **Evidence rule:** text in `[VERIFY: ...]` brackets is not yet established. Replace it with the exact live result or remove the claim. Do not submit the local rehearsal as proof of B2 or live-AI generation.
 
 ## Project name
 
@@ -66,7 +66,8 @@ Genblaze is the orchestration and provenance layer, not a thin API wrapper. We u
 
 ## AI providers and models
 
-- [VERIFY: `GMI Cloud` / exact model slug used in the final live run]
+- [VERIFY: `NVIDIA NIM` / exact model ID used in the final live run]
+- [REMOVE IF UNUSED: `GMI Cloud` / exact model slug used in the final live run]
 - [REMOVE IF UNUSED: `OpenAI` / exact model ID used in the final live run]
 - Local procedural provider (`provenance-vault-local`, `procedural-editorial-v1`) is a clearly labelled offline development rehearsal and is not presented as generative-AI submission proof.
 
@@ -99,7 +100,7 @@ Provenance has at least two layers: the integrity of the generation record and t
 
 ## Built with
 
-Backblaze B2, Genblaze, GMI Cloud [VERIFY], OpenAI [REMOVE IF UNUSED], Python, FastAPI, React, TypeScript, Vite, Pydantic, pytest, Vitest, Ruff, Docker, SHA-256.
+Backblaze B2, Genblaze, GMI Cloud [REMOVE IF UNUSED], OpenAI [REMOVE IF UNUSED], NVIDIA NIM [REMOVE IF UNUSED], Python, FastAPI, React, TypeScript, Vite, Pydantic, pytest, Vitest, Ruff, Docker, SHA-256.
 
 ## Links
 

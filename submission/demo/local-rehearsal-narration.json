@@ -1,0 +1,64 @@
+{
+  "title": "Provenance Vault: Local Rehearsal",
+  "subtitle": "Account-independent judge walkthrough",
+  "language": "en-US",
+  "truth_boundary": "No live Backblaze B2 upload or live generative-media provider run is shown.",
+  "scenes": [
+    {
+      "id": "01-title",
+      "visual": "title",
+      "heading": "Generate media. Keep the proof.",
+      "subheading": "A truthful local rehearsal",
+      "narration": "This is Provenance Vault, shown in offline rehearsal mode. No live Backblaze B2 upload and no live AI provider generation appears in this video. The purpose is to demonstrate the product workflow and its evidence boundary truthfully."
+    },
+    {
+      "id": "02-problem",
+      "visual": "problem",
+      "heading": "Generated media loses context fast",
+      "subheading": "Prompt, model, manifest, and exact bytes should travel together",
+      "narration": "Generated media is easy to move and hard to audit. The prompt, model, parameters, manifest, and final bytes are often separated as soon as a file is downloaded. Provenance Vault keeps those facts together."
+    },
+    {
+      "id": "03-rehearsal",
+      "visual": "screenshot",
+      "heading": "The product workflow, exercised locally",
+      "subheading": "Real Genblaze orchestration with a deterministic local SVG fixture",
+      "narration": "In the local rehearsal, a creator enters an original brief, chooses format and palette, and selects Generate and seal. A deterministic local S V G provider runs through the real Genblaze pipeline. The interface labels the result Local Demo and Offline Rehearsal, so it cannot be mistaken for cloud evidence."
+    },
+    {
+      "id": "04-ledger",
+      "visual": "ledger",
+      "heading": "One visible proof ledger",
+      "subheading": "Provider, model, storage key, asset hash, and manifest hash",
+      "narration": "Genblaze produces the run metadata, output digest, and canonical manifest. Provenance Vault stores the rehearsal object under a content-addressed local key, then exposes the provider, model, asset hash, manifest hash, and pipeline status in one proof ledger."
+    },
+    {
+      "id": "05-integrity",
+      "visual": "integrity",
+      "heading": "Two integrity checks, kept separate",
+      "subheading": "Canonical record integrity is not the same as current-object integrity",
+      "narration": "The app treats two checks separately. Manifest verification confirms that the canonical record and declared digest remain internally consistent. Verify bytes rereads the current stored object, computes S H A two fifty six again, and compares it with the manifest. In the tamper test, the canonical manifest still verifies, while the changed stored bytes fail the independent comparison."
+    },
+    {
+      "id": "06-live-path",
+      "visual": "live-path",
+      "heading": "The live path is implemented, not live-proven",
+      "subheading": "A safety gate blocks paid generation unless B2 is configured",
+      "narration": "The unexecuted live path replaces the local provider with a supported Genblaze generative-media connector, and the local object with Backblaze B2. The service refuses any live provider unless B2 is configured. B2 repository behavior and Vercel routing are covered by network-free fakes, but those tests are not a real upload."
+    },
+    {
+      "id": "07-verification",
+      "visual": "verification",
+      "heading": "Account-independent verification",
+      "subheading": "Backend, frontend, safety boundaries, and production build",
+      "narration": "Verification covers the local Genblaze pipeline, content addressing, canonical manifests, secret redaction, API behavior, B2 repository ordering through fakes, tamper detection, frontend tests, type checking, lint, and a production build. The source is public at the linked GitHub repository."
+    },
+    {
+      "id": "08-close",
+      "visual": "close",
+      "heading": "Ready for the live evidence gate",
+      "subheading": "Local readiness is not cloud proof",
+      "narration": "What remains is explicit: credentials, one real provider run, a real B2 write and readback, public deployment, and final account submission. Provenance Vault is ready for that evidence gate. Until it passes, this video remains a local rehearsal, not cloud proof."
+    }
+  ]
+}

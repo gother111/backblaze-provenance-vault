@@ -2,6 +2,10 @@
 
 Record only after the public B2/live-provider acceptance test passes. Keep the browser zoom at 100%, notifications off, credentials hidden, and the DevTools/network pane closed unless it adds necessary evidence.
 
+A separate 2:44 local-rehearsal master is rendered and validated in
+[`LOCAL_REHEARSAL_VIDEO.md`](LOCAL_REHEARSAL_VIDEO.md). It is deliberately labeled as local and
+must not be substituted for the live B2/provider evidence described below.
+
 ## 0:00–0:15: problem
 
 **Visual:** Full app, result and proof ledger visible.

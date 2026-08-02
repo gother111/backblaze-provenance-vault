@@ -54,11 +54,12 @@ def test_byte_verification_detects_tampering(settings: Settings) -> None:
     assert verification.actual_sha256 != verification.expected_sha256
 
 
-def test_live_provider_requires_b2_storage(settings: Settings) -> None:
+@pytest.mark.parametrize("provider", ["gmicloud", "nvidia"])
+def test_live_provider_requires_b2_storage(settings: Settings, provider: str) -> None:
     service = ProvenanceService(settings)
 
     with pytest.raises(ConfigurationError, match="B2 storage"):
-        service.create_run(sample_request(provider="gmicloud"))
+        service.create_run(sample_request(provider=provider))
 
 
 def test_public_capabilities_do_not_expose_secrets(settings: Settings) -> None:
@@ -70,6 +71,7 @@ def test_public_capabilities_do_not_expose_secrets(settings: Settings) -> None:
             "b2_bucket": "demo-bucket",
             "gmi_api_key": "secret-gmi",
             "openai_api_key": "secret-openai",
+            "nvidia_api_key": "secret-nvidia",
         }
     )
 
@@ -79,6 +81,7 @@ def test_public_capabilities_do_not_expose_secrets(settings: Settings) -> None:
     assert "secret-app-key" not in serialized
     assert "secret-gmi" not in serialized
     assert "secret-openai" not in serialized
+    assert "secret-nvidia" not in serialized
     assert "demo-bucket" in serialized
 
 

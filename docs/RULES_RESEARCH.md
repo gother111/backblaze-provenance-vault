@@ -1,6 +1,7 @@
 # Backblaze Generative Media Hackathon research
 
-Checked against the official pages on **2026-08-01**. The official rules and Devpost clock remain authoritative.
+Competition pages were checked on **2026-08-01**. Official Genblaze release and package sources
+were reconciled on **2026-08-02**. The official rules and Devpost clock remain authoritative.
 
 ## Deadline and prizes
 
@@ -17,7 +18,11 @@ The entry must be a generative-media application that uses both:
 1. **Backblaze B2** for storage/data orchestration; and
 2. **Genblaze** for the generative-media pipeline.
 
-This app's intended live proof is one GMI Cloud or OpenAI image run orchestrated by Genblaze, persisted by Genblaze's content-addressed B2 sink, then read back from B2 and independently re-hashed.
+This app's intended live proof is one NVIDIA NIM, GMI Cloud, or OpenAI image run orchestrated by
+Genblaze, persisted by Genblaze's content-addressed B2 sink, then read back from B2 and
+independently re-hashed. NVIDIA NIM is the prepared candidate no-spend route through the official
+`genblaze-nvidia==0.3.3` connector, but current offer/model access is unverified and still requires
+an authorized account, current terms acceptance, an API key, and one verified live response.
 
 ## Submission deliverables
 
@@ -63,6 +68,21 @@ The entrant retains project IP, while granting the organizer the limited judging
 
 The [resources page](https://backblaze-generative-media.devpost.com/resources) describes Genblaze as a unified pipeline that emits a SHA-256 provenance manifest including provider, model, prompt, parameters, timestamps, and outputs. The [updates page](https://backblaze-generative-media.devpost.com/updates) announced the `v0.7.0` release wave shortly before the deadline. The repository pins the corresponding currently published package versions in `uv.lock`.
 
+### Genblaze v0.7 release-wave reconciliation
+
+| Official fact checked on 2026-08-02 | Local source state | Claim boundary |
+| --- | --- | --- |
+| The [`v0.7.0` release notes](https://github.com/backblaze-labs/genblaze/releases/tag/v0.7.0) say the wave tag is not the umbrella PyPI version. They list `genblaze==0.4.5`, `genblaze-core==0.3.8`, and `genblaze-nvidia==0.3.3`. | The root and backend projects pin the umbrella and NVIDIA versions; `uv.lock` resolves core `0.3.8`; `uv lock --check` passes. | Confirms release/package alignment, not provider compatibility. |
+| The [`genblaze-nvidia` 0.3.3 package](https://pypi.org/project/genblaze-nvidia/0.3.3/) is published from the official `v0.7.0` tag with PyPI attestations. Its documented image connector is `NvidiaImageProvider`, its credential variable is `NVIDIA_API_KEY`, and its image families include `black-forest-labs/flux*`. | The app uses that provider class, variable, and the candidate model `black-forest-labs/flux.1-schnell`; the lockfile hashes match the published 0.3.3 artifacts. | Confirms intended API shape and artifact identity only. |
+| The [official multi-provider sample](https://github.com/backblaze-labs/genblaze-gen-media-multi-provider-sample) names `flux.1-schnell` as its NVIDIA image default and describes a free/no-card route, but tells users to confirm offers in the provider console because they change. | NVIDIA is available as a disabled selector until `NVIDIA_API_KEY` is configured; a network-free fake covers one inline response. | Does not confirm current account eligibility, free access, quota, exact model availability, a real response, or a successful B2 run. |
+
+The submission may name NVIDIA and an exact model only if the same final public run returns those
+values. Configuration defaults, package documentation, selector screenshots, and mocked responses
+must not be used as live compatibility evidence.
+
 ## Actions intentionally not taken
 
-No Devpost registration, rule acceptance, GitHub repository creation/star, cloud account creation, provider purchase, public deployment, video upload, or final submission was performed. Those are external identity/account actions reserved for the entrant.
+No Devpost registration or rule acceptance, cloud/provider account creation or access, credential
+use, purchase, public deployment, video upload, or final submission was performed during this
+hardening pass. The existing public repository, draft project handle, and previously recorded
+Genblaze star are separate historical states, not evidence of submission.

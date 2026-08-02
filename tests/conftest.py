@@ -21,4 +21,6 @@ def settings(tmp_path: Path) -> Settings:
         gmi_image_model="seedream-5.0-lite",
         openai_api_key="",
         openai_image_model="gpt-image-2",
+        nvidia_api_key="",
+        nvidia_image_model="black-forest-labs/flux.1-schnell",
     )
